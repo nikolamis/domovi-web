@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dodavanje soba</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+	<h1>Forma za izmenu</h1>
+	
+	<section id="izborDoma">
+		<label>Izaberite Dom</label>
+		<select name="" id="dom">
+		<option value="null">Izaberite dom</option>
+		{{#if domovi}}
+			{{#each domovi}}
+			<option value="{{this}}">{{this}}</option>
+		{{/each}}
+		{{/if}}
+		
+		</select>
+	</section>
+	
+	
+		<section id="izborSobe">
+		<label>Izaberite tip Sobe</label>
+		<select name="" id="soba">
+		<option value="null">Izaberite sobu</option>
+		
+		
+		
+		</select>
+	</section>
+	
+	<section id="izborKupatila">
+		<label>Izaberite da li soba ima kupatilo</label>
+		<select name="" id="kupatilo">
+		<option value="null">Izaberite</option>
+		
+		
+		
+		</select>
+	</section>
+    
+    <div>
+		<label>Unesite novu cenu za odabranu sobu</label>
+		<input id="cena" required>
+	</div>
+	
+	<button id="dugmee">Primeni izmenu</button>
+    
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+    
+    let dom=document.querySelector("#dom");
+    
+    dom.onchange=function(){
+    
+    let podaci={
+    "dom":dom.value
+    }
+    
+    $.ajax({
+    url:"/prikaziSobe",
+    method:"POST",
+    data:podaci,
+    success:function(response){
+    let sobe = JSON.parse(response);
+    soba.innerHTML="";
+    for(let e of sobe){
+    soba.innerHTML+=`<option value="${e}">${e}</option>`
+    
+    }
+    
+    }
+    
+    });
+    }
+    
+    
+    let soba=document.querySelector("#soba");
+    
+    soba.onchange=function(){
+    
+    let podaci2={
+    "soba":soba.value,
+    "dom":dom.value
+    }
+ 
+    $.ajax({
+    url:"/prikaziKupatila",
+    method:"POST",
+    data:podaci2,
+    success:function(response){
+    let kupatila = JSON.parse(response);
+    kupatilo.innerHTML="";
+    for(let e of kupatila){
+    kupatilo.innerHTML+=`<option value="${e}">${e}</option>`
+    
+    }
+    
+    }
+    
+    });
+    
+    let kupatilo = document.querySelector("#kupatilo");
+    let cena = document.querySelector("#cena");
+    document.querySelector("#dugmee").onclick=function(){
+    
+    let podaci3={
+    "soba":soba.value,
+    "dom":dom.value,
+    "kupatilo":kupatilo.value,   
+    "cena":cena.value 
+    }
+    
+    $.ajax({
+    url:"/izmeniCenu",
+    method:"POST",
+    data:podaci3,
+    success:function(response){
+    alert("podaci izmenjeni");
+    location.href("/");
+    }
+    
+    });
+    
+    
+    
+    }
+    
+    
+    }
+    
+    
+    
+    </script>
+    
+</body>
+</html>

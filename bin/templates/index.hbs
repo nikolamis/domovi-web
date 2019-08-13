@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>STUDENTSKI DOMOVI</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+		<h1 align="center"><font size="7" color="#3071a9"><strong>Studentski Domovi</strong></font></h1>
+		<label>Unesite broj soba od do</label>
+		<input id="broj1">
+		<input id="broj2"> 
+		<button id="dugme" class="bg-primary">Pronadji</button>
+		<a href="/dodavanje">  Dodaj sobu &nbsp;</a>
+		<a href="/izmena"> &nbsp; Izmeni podatke</a>
+		</br>
+		</br>
+		
+		
+		{{#if podaci}}
+		
+			<div id="content">
+			{{#each podaci}}
+			
+			
+				<div class="bg-primary">
+					<div class="row">
+						<div class="col-md-4">Ime dome: {{this.imeDoma}}</div>
+						<div class="col-md-4">Adresa: {{this.adresa}}</div>
+						<div class="col-md-4">Broj Soba: {{this.brojSoba}}</div>
+					</div>
+				</div>
+				
+				
+				<div class="bg-warning">
+					<div class="row">
+						{{#each this.tipSobe}}
+							<div class="col-md-3" style="border: 1px solid black;">
+								<p>Tip: {{this.tip}}</p>
+								<p>Cena: {{this.cena}}</p>
+								<p>Kupatilo: {{this.kupatiloUSobi}}</p>
+								
+							</div>
+						{{/each}}
+					</div>
+				</div>
+			
+			
+			
+			
+			{{/each}}
+			</div>
+		{{/if}}
+		
+		
+		
+		
+		
+		
+		
+    
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+    
+    document.querySelector("#dugme").onclick=function(){
+    
+    		let cont=document.querySelector("#content");
+    		let broj1=document.querySelector("#broj1");
+    		let broj2=document.querySelector("#broj2");
+    		
+    		$.ajax(
+    		{
+    			url:"/brojsoba",
+    			method:"POST",
+    			data:{
+    			"broj1":broj1.value,
+    			"broj2":broj2.value
+    			},
+    			success:function(response)
+    			{
+    				let domovi=JSON.parse(response);
+    				let i=0;
+    				cont.innerHTML="";
+    				for(let dom of domovi){
+    				cont.innerHTML+=`
+    				
+    				<div class="bg-primary">
+					<div class="row">
+						<div class="col-md-4">Ime dome:${dom.imeDoma}</div>
+						<div class="col-md-4">Adresa:${dom.adresa}</div>
+						<div class="col-md-4">Broj Soba:${dom.brojSoba}</div>
+					</div>
+				</div>
+				
+				{{#each dom.tipSobe}}
+				<div class="bg-warning">
+					<div class="row">
+						
+							<div class="col-md-3" style="border: 1px solid black;">
+								<p>Tip:${dom.tipSobe.tip}</p>
+								<p>Cena:${dom.tipSobe.cena}</p>
+								<p>Kupatilo u sobi:${dom.tipSobe.kupatiloUSobi}</p>
+								
+							</div>
+						
+					</div>
+				</div>
+    			{{/each}}
+    				
+    				
+    				
+    				`
+    				}
+    			}
+            });  }	
+    	
+    	
+    
+    	
+    </script>
+    
+</body>
+</html>
